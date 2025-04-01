@@ -1,0 +1,56 @@
+#locals {
+#  workers_ip_addr        = yandex_compute_instance_group.k8s-workers.instances.*.network_interface.0.ip_address
+#  workers_subnet_id =  yandex_compute_instance_group.k8s-workers.instances.*.network_interface.0.subnet_id
+#  
+#  # Nested loop over both lists, and flatten the result.
+#  workers = flatten([
+#    for wa in local.workers_ip_addr : [
+#      for ws in local.workers_subnet_id : {
+#        ws = ws
+#        wa = wa
+#      }
+#    ]
+#  ])
+#}
+
+#  val = [
+#    [
+#      "192.168.5.29",
+#      "192.168.6.24",
+#    ],
+#    [
+#      "e2lkehg1n1jsuibb9jhn",
+#      "b0c2tvuouknn1oo2rp53",
+#    ]
+#  ]
+
+
+locals {
+  val = [
+      "192.168.5.29",
+      "192.168.6.24",
+    ]
+  cal = [
+      "e2lkehg1n1jsuibb9jhn",
+      "b0c2tvuouknn1oo2rp53",
+    ]
+
+  workers = zipmap(local.val,local.cal)
+
+}
+
+output "test" {
+  value = local.workers
+}
+
+
+
+#output "test1" {
+#  value = { for a in local.ingress_rules :  }
+#}
+
+
+#locals {
+#    asd = { for a in local.ingress_rules : a.workers_ip_addr => a.workers_subnet_id }
+#    asd = { for a in local.ingress_rules : a => a }
+#}

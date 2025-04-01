@@ -1,0 +1,144 @@
+controller:
+  numExecutors: 0
+  admin:
+    createSecret: true
+    # -- Admin username created as a secret if `controller.admin.createSecret` is true
+    username: "admin"
+    # -- Admin password created as a secret if `controller.admin.createSecret` is true
+    # @default -- <random password>
+    password: "adminntlg"
+
+  JCasC:
+    defaultConfig: true
+    configScripts:
+     welcome-message: |
+       jenkins:
+         systemMessage: This is Netology App.
+       jobs:
+        - script: >
+            pipelineJob('app-pipeline-job') {
+              definition {
+                cps {
+                  script('''\
+                    pipeline {
+                        agent {
+                            kubernetes {
+                                inheritFrom 'default'
+                                yaml \'''
+                                apiVersion: v1
+                                kind: Pod
+                                spec:
+                                  containers:
+                                  - name: kaniko
+                                    volumeMounts:
+                                    - name: kaniko-secret
+                                      mountPath: /kaniko/.docker
+                                  volumes:
+                                  - name: kaniko-secret
+                                    projected:
+                                      sources:
+                                      - secret:
+                                          name: dockercred
+                                          items:
+                                          - key: .dockerconfigjson
+                                            path: config.json
+                                \'''
+                            }
+                        }
+                        options {
+                          skipStagesAfterUnstable()
+                          skipDefaultCheckout()
+                        }
+                        environment {
+                            REGISTRY = 'owirtifo'
+                            IMAGE_NAME = 'test-ntlg'
+                            CLUSTER_URL = "https://kubernetes.default"
+                        }
+                        stages {
+                          stage ('test') {
+                            steps {
+                              echo "hello"
+                            }
+                          }
+                        }
+                      }
+                    }'''.stripIndent())
+
+                }
+              }
+            }
+
+  # List of plugins to be install during Jenkins controller start
+  installPlugins:
+    - kubernetes:4306.vc91e951ea_eb_d
+    - workflow-aggregator:600.vb_57cdd26fdd7
+    - git:5.7.0
+    - configuration-as-code:1932.v75cb_b_f1b_698d
+    - job-dsl:1.91
+    - kubernetes-cli:1.12.1
+
+persistence:
+  # -- Enable the use of a Jenkins PVC
+  enabled: false
+#  storageClass: jenkins-pv
+
+#  ingress:
+#    # -- Enables ingress
+#    enabled: true
+#
+#    # Override for the default paths that map requests to the backend
+#    # -- Override for the default Ingress paths
+#    paths: []
+#    # - backend:
+#    #     serviceName: ssl-redirect
+#    #     servicePort: use-annotation
+#    # - backend:
+#    #     serviceName: >-
+#    #       {{ template "jenkins.fullname" . }}
+#    #     # Don't use string here, use only integer value!
+#    #     servicePort: 8080
+#
+#    # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
+#    # For Kubernetes v1.19+, use 'networking.k8s.io/v1'
+#    # -- Ingress API version
+#    apiVersion: "networking.k8s.io/v1"
+#    # -- Ingress labels
+#    labels: {}
+#    # -- Ingress annotations
+#    annotations:
+#      nginx.ingress.kubernetes.io/rewrite-target: /
+#      kubernetes.io/ingress.class: nginx
+#    # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+#    # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+#    ingressClassName: nginx
+#
+#    # Set this path to jenkinsUriPrefix above or use annotations to rewrite path
+#    # -- Ingress path
+#    path:
+#
+#    # configures the hostname e.g. jenkins.example.com
+#    # -- Ingress hostname
+#    hostName: jenkins.gfg24.com
+#    # -- Hostname to serve assets from
+#    resourceRootUrl:
+#    # -- Ingress TLS configuration
+#    tls: []
+#    # - secretName: jenkins.cluster.local
+#    #   hosts:
+#    #     - jenkins.cluster.local
+
+agent:
+  podName: default
+  customJenkinsLabels: default
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2048Mi"
+  additionalContainers:
+    - sideContainerName: kaniko
+      image:
+        repository: gcr.io/kaniko-project/executor
+        tag: debug
+      command: sleep
+      args: 99d
+      privileged: false
