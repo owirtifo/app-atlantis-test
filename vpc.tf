@@ -40,6 +40,7 @@ resource "yandex_vpc_subnet" "subnet-b" {
   v4_cidr_blocks = local.subnet_b_v4_cidr_blocks[terraform.workspace]
 }
 
+
 #resource "yandex_vpc_subnet" "subnet-c" {
 #  name           = "subnet-c-${terraform.workspace}"
 #  folder_id   = local.folder_id
