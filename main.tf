@@ -29,8 +29,8 @@ data "terraform_remote_state" "default" {
     bucket                  = "netology-bucket"
     region                  = var.YC_DEFAULT_REGION
     key                     = "default/terraform.tfstate"
-    access_key = var.bk_access_key
-    secret_key = var.bk_secret_key
+    access_key = var.BK_ACCESS_KEY
+    secret_key = var.BK_SECRET_KEY
 
     skip_region_validation      = true
     skip_credentials_validation = true
@@ -39,13 +39,7 @@ data "terraform_remote_state" "default" {
 
 locals {
   folder_id = data.terraform_remote_state.default.outputs.folder_id
-}
-
-locals {
   service_account_id = data.terraform_remote_state.default.outputs.service_account_id
-}
-
-locals {
   folder_iam_member = data.terraform_remote_state.default.outputs.folder_iam_member
 }
 
