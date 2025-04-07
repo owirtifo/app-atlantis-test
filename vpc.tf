@@ -12,6 +12,9 @@ locals {
   }
 }
 
+
+
+
 #locals {
 #  subnet_c_v4_cidr_blocks = {
 #    stage = ["192.168.6.0/24"]
