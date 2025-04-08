@@ -5,12 +5,12 @@ locals {
   }
 }
 
-#locals {
-#  subnet_b_v4_cidr_blocks = {
-#    stage = ["192.168.5.0/24"]
-#    prod = ["192.168.2.0/24"]
-#  }
-#}
+locals {
+  subnet_b_v4_cidr_blocks = {
+    stage = ["192.168.5.0/24"]
+    prod = ["192.168.2.0/24"]
+  }
+}
 
 #locals {
 #  subnet_c_v4_cidr_blocks = {
@@ -32,13 +32,13 @@ resource "yandex_vpc_subnet" "subnet-a" {
   v4_cidr_blocks = local.subnet_a_v4_cidr_blocks[terraform.workspace]
 }
 
-#resource "yandex_vpc_subnet" "subnet-b" {
-#  name           = "subnet-b-${terraform.workspace}"
-#  folder_id   = local.folder_id
-#  zone           = "ru-central1-b"
-#  network_id     = yandex_vpc_network.netology-vpc.id
-#  v4_cidr_blocks = local.subnet_b_v4_cidr_blocks[terraform.workspace]
-#}
+resource "yandex_vpc_subnet" "subnet-b" {
+  name           = "subnet-b-${terraform.workspace}"
+  folder_id   = local.folder_id
+  zone           = "ru-central1-b"
+  network_id     = yandex_vpc_network.netology-vpc.id
+  v4_cidr_blocks = local.subnet_b_v4_cidr_blocks[terraform.workspace]
+}
 
 #resource "yandex_vpc_subnet" "subnet-c" {
 #  name           = "subnet-c-${terraform.workspace}"
