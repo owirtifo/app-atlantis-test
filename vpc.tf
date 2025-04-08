@@ -5,12 +5,12 @@ locals {
   }
 }
 
-#locals {
-#  subnet_b_v4_cidr_blocks = {
-#    stage = ["192.168.5.0/24"]
-#    prod = ["192.168.2.0/24"]
-#  }
-#}
+locals {
+  subnet_b_v4_cidr_blocks = {
+    stage = ["192.168.5.0/24"]
+    prod = ["192.168.2.0/24"]
+  }
+}
 
 #locals {
 #  subnet_c_v4_cidr_blocks = {
