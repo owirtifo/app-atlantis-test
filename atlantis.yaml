@@ -1,6 +1,6 @@
-version: 3
-projects:
-- dir: .
-  workspace: stage
-- dir: .
-  workspace: prod
+# version: 3
+# projects:
+# - dir: .
+#   workspace: stage
+# - dir: .
+#   workspace: prod
