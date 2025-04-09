@@ -44,6 +44,7 @@ resource "yandex_vpc_subnet" "subnet-b" {
 #  name           = "subnet-c-${terraform.workspace}"
 #  folder_id   = local.folder_id
 #  zone           = "ru-central1-c"
+
 #  network_id     = yandex_vpc_network.netology-vpc.id
 #  v4_cidr_blocks = local.subnet_c_v4_cidr_blocks[terraform.workspace]
 #}
